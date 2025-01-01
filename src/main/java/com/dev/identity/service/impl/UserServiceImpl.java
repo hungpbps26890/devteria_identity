@@ -4,6 +4,7 @@ import com.dev.identity.dto.request.UserCreationRequest;
 import com.dev.identity.dto.request.UserUpdateRequest;
 import com.dev.identity.dto.response.UserResponse;
 import com.dev.identity.entity.User;
+import com.dev.identity.enums.Role;
 import com.dev.identity.exception.AppException;
 import com.dev.identity.exception.ErrorCode;
 import com.dev.identity.mapper.UserMapper;
@@ -12,11 +13,16 @@ import com.dev.identity.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,11 +43,23 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
     public List<UserResponse> getUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String name = authentication.getName();
+        log.info("Username: {}", name);
+
+        authentication.getAuthorities()
+                .forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toUserResponse)
