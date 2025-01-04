@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.UNEXPECTED_EXCEPTION;
 
         return ResponseEntity
-                .internalServerError()
+                .status(errorCode.getStatus())
                 .body(ApiResponse.<Void>builder()
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
 
         return ResponseEntity
-                .badRequest()
+                .status(errorCode.getStatus())
                 .body(ApiResponse.<Void>builder()
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
@@ -57,12 +57,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
-        return new ResponseEntity<>(
-                ApiResponse.<Void>builder()
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(ApiResponse.<Void>builder()
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
-                        .build(),
-                HttpStatus.UNAUTHORIZED
-        );
+                        .build());
     }
 }
