@@ -54,6 +54,15 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/my-info")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Get my info successfully")
+                .data(userService.getMyInfo())
+                .build();
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<UserResponse> updateUser(
             @PathVariable("id") String id,
