@@ -27,21 +27,21 @@ public class ApplicationConfig {
     public ApplicationRunner applicationRunner() {
         return args -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
-                HashSet<String> roles = new HashSet<>();
-                roles.add(Role.ADMIN.name());
-                roles.add(Role.USER.name());
+//                HashSet<String> roles = new HashSet<>();
+//                roles.add(Role.ADMIN.name());
+//                roles.add(Role.USER.name());
 
                 User user = User.builder()
                         .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        .roles(roles)
+                        .password(passwordEncoder.encode("123456"))
+//                        .roles(roles)
                         .firstName("Admin")
                         .lastName("Nguyen")
                         .build();
 
                 userRepository.save(user);
 
-                log.info("Admin created with default username and password: admin");
+                log.info("Admin created with default username: admin");
             }
         };
     }
