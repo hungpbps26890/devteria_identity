@@ -3,11 +3,13 @@ package com.dev.identity.service.impl;
 import com.dev.identity.dto.request.UserCreationRequest;
 import com.dev.identity.dto.request.UserUpdateRequest;
 import com.dev.identity.dto.response.UserResponse;
+import com.dev.identity.entity.Role;
 import com.dev.identity.entity.User;
-import com.dev.identity.enums.Role;
+import com.dev.identity.enums.RoleEnum;
 import com.dev.identity.exception.AppException;
 import com.dev.identity.exception.ErrorCode;
 import com.dev.identity.mapper.UserMapper;
+import com.dev.identity.repository.RoleRepository;
 import com.dev.identity.repository.UserRepository;
 import com.dev.identity.service.UserService;
 import lombok.AccessLevel;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -31,6 +34,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
+
+    RoleRepository roleRepository;
 
     UserMapper userMapper;
 
@@ -45,9 +50,12 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-//        HashSet<String> roles = new HashSet<>();
-//        roles.add(Role.USER.name());
-//        user.setRoles(roles);
+        Role roleUser = roleRepository.findById(RoleEnum.USER.name())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleUser);
+        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -73,7 +81,7 @@ public class UserServiceImpl implements UserService {
                 .forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    @PreAuthorize("hasAuthority('READ_DATA')")
     @Override
     public UserResponse getUserById(String id) {
         getAuthentication();
@@ -83,8 +91,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
+    @PostAuthorize("returnObject.username == authentication.name")
     @Override
     public UserResponse getMyInfo() {
+        getAuthentication();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String username = authentication.getName();
@@ -95,16 +106,23 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_DATA')")
     @Override
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = findById(id);
 
         userMapper.updateUser(user, request);
 
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        List<Role> roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
 
+    @PreAuthorize("hasAuthority('DELETE_DATA')")
     @Override
     public void deleteUserById(String id) {
         findById(id);

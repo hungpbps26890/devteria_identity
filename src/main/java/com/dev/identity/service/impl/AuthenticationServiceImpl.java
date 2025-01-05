@@ -112,7 +112,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         StringJoiner stringJoiner = new StringJoiner(" ");
 
         if (!user.getRoles().isEmpty()) {
-            user.getRoles().forEach(role -> stringJoiner.add(role.getName()));
+            user.getRoles().forEach(role -> {
+                stringJoiner.add("ROLE_" + role.getName());
+
+                if (!role.getPermissions().isEmpty()) {
+                    role.getPermissions()
+                            .forEach(permission -> stringJoiner.add(permission.getName()));
+                }
+            });
         }
 
         return stringJoiner.toString();

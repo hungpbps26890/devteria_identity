@@ -1,7 +1,11 @@
 package com.dev.identity.config;
 
+import com.dev.identity.entity.Role;
 import com.dev.identity.entity.User;
-import com.dev.identity.enums.Role;
+import com.dev.identity.enums.RoleEnum;
+import com.dev.identity.exception.AppException;
+import com.dev.identity.exception.ErrorCode;
+import com.dev.identity.repository.RoleRepository;
 import com.dev.identity.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +25,26 @@ import java.util.HashSet;
 public class ApplicationConfig {
 
     PasswordEncoder passwordEncoder;
+
     UserRepository userRepository;
+
+    RoleRepository roleRepository;
 
     @Bean
     public ApplicationRunner applicationRunner() {
         return args -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
-//                HashSet<String> roles = new HashSet<>();
-//                roles.add(Role.ADMIN.name());
-//                roles.add(Role.USER.name());
+
+                Role roleAdmin = roleRepository.findById(RoleEnum.ADMIN.name())
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+                HashSet<Role> roles = new HashSet<>();
+                roles.add(roleAdmin);
 
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("123456"))
-//                        .roles(roles)
+                        .roles(roles)
                         .firstName("Admin")
                         .lastName("Nguyen")
                         .build();

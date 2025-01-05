@@ -9,7 +9,9 @@ public enum ErrorCode {
     USER_EXISTED(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "User already existed"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, "User not found"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, "Unauthenticated"),
-    UNAUTHORIZED(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, "Do not have permission");
+    UNAUTHORIZED(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, "Do not have permission"),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, "Role not found")
+    ;
 
     private final int code;
     private final HttpStatus status;
