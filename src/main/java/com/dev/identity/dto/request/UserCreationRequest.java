@@ -1,5 +1,6 @@
 package com.dev.identity.dto.request;
 
+import com.dev.identity.validator.DobConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -26,5 +27,6 @@ public class UserCreationRequest {
 
     String lastName;
 
+    @DobConstraint(min = 18, message = "Age must be greater than or equal to {min}")
     LocalDate dob;
 }
