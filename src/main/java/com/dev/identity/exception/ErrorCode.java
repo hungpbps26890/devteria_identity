@@ -9,6 +9,7 @@ public enum ErrorCode {
     USER_EXISTED(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "User already existed"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, "User not found"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, "Unauthenticated"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, "Invalid token"),
     UNAUTHORIZED(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, "Do not have permission"),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, "Role not found"),
     INVALID_DOB_AGE(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Age must be at least {min}"),

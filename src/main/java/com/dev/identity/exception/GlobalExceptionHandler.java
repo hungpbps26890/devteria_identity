@@ -3,14 +3,12 @@ package com.dev.identity.exception;
 import com.dev.identity.dto.response.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,18 +43,6 @@ public class GlobalExceptionHandler {
                         .message(errorCode.getMessage())
                         .build());
     }
-
-//    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-//    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-//        String message = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-//
-//        return ResponseEntity
-//                .badRequest()
-//                .body(ApiResponse.<Void>builder()
-//                        .code(HttpStatus.BAD_REQUEST.value())
-//                        .message(message)
-//                        .build());
-//    }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
