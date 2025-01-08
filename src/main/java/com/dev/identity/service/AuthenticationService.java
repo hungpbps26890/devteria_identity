@@ -3,6 +3,7 @@ package com.dev.identity.service;
 import com.dev.identity.dto.request.AuthenticationRequest;
 import com.dev.identity.dto.request.IntrospectRequest;
 import com.dev.identity.dto.request.LogoutRequest;
+import com.dev.identity.dto.request.RefreshRequest;
 import com.dev.identity.dto.response.AuthenticationResponse;
 import com.dev.identity.dto.response.IntrospectResponse;
 import com.nimbusds.jose.JOSEException;
@@ -16,4 +17,6 @@ public interface AuthenticationService {
     IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException;
 
     void logout(LogoutRequest request) throws ParseException, JOSEException;
+
+    AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
 }
